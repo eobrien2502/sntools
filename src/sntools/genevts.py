@@ -78,11 +78,17 @@ def parse_command_line_options():
     parser.add_argument("input_file", help="Name or common prefix of the input file(s). Required.")
 
     # comment in place of a possible new argument to specify pre SN fluxes needed
+    choices = ("sn", "presn")
+
+    parser.add_argument("--mode", metavar="MODE", choices=choices, default=choices[0], 
+                        help="Mode of operation: supernova burst or pre supernova. Choices: %(choices)s. Default: %(default)s.")
 
     choices = ("gamma", "nakazato", "princeton", "totani", "warren2020",
                "SNEWPY-Bollig_2016", "SNEWPY-Fornax_2021", "SNEWPY-Fornax_2022", "SNEWPY-Kuroda_2020",
                "SNEWPY-Mori_2023", "SNEWPY-Nakazato_2013", "SNEWPY-OConnor_2015", "SNEWPY-Sukhbold_2015",
-               "SNEWPY-Tamborra_2014", "SNEWPY-Walk_2018", "SNEWPY-Walk_2019", "SNEWPY-Zha_2021")
+               "SNEWPY-Tamborra_2014", "SNEWPY-Walk_2018", "SNEWPY-Walk_2019", "SNEWPY-Zha_2021", "SNEWPY-Odrzywolek_2010",
+               "SNEWPY-Patton_2017", "SNEWPY-Kato_2017", "SNEWPY-Yoshida_2016")
+    
     parser.add_argument("-f", "--format", metavar="FORMAT", choices=choices, default=choices[1],
                         help="Format of input file(s). Choices: %(choices)s. Default: %(default)s.")
 
