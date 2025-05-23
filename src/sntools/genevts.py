@@ -141,7 +141,7 @@ def parse_command_line_options():
     args.channels = args.detector.material["channel_weights"] if args.channel == "all" else [args.channel]
 
     if args.format[:7] == "SNEWPY-":
-        args.flux = SNEWPYCompositeFlux.from_file(args.input_file, args.format[7:], args.starttime, args.endtime)
+        args.flux = SNEWPYCompositeFlux.from_file(args.input_file, args.mode, args.format[7:], args.starttime, args.endtime)
     else:
         args.flux = CompositeFlux.from_file(args.input_file, args.format, args.starttime, args.endtime)
 
