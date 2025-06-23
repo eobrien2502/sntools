@@ -133,6 +133,7 @@ class SNEWPYFlux(BaseFlux):
         self._sn_model = sn_model
 
         times = [t.to(u.ms).value for t in sn_model.get_time()]
+        times.sort()
         self.starttime = get_starttime(starttime, times[0])
         self.endtime = get_endtime(endtime, times[-1])
         self.raw_times = get_raw_times(times, self.starttime, self.endtime)

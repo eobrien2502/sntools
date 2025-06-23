@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import argparse
-from concurrent.futures import ProcessPoolExecutor, as_completed
+#from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
 from importlib import import_module
 import random
@@ -32,19 +32,21 @@ def main():
     flux_at_detector = args.flux.transformed_by(args.transformation, args.distance)
 
     # Generate events for each (sub-)channel and combine them
-    pool = ProcessPoolExecutor(max_workers=args.maxworkers)
-    results = []
+    events = []
+    #pool = ProcessPoolExecutor(max_workers=args.maxworkers)
+    #results = []
     for channel in sorted(args.channels):
         mod_channel = import_module("sntools.interaction_channels." + channel)
         n_targets = args.detector.n_molecules * args.detector.material["channel_weights"][channel]
         for flv in mod_channel.possible_flavors:
             channel_instance = mod_channel.Channel(flv)
             for flux in flux_at_detector.components[flv]:
-                results.append(pool.submit(gen_evts, channel_instance, flux, n_targets, args.randomseed + random.random(), args.verbose))
+                #results.append(pool.submit(gen_evts, channel_instance, flux, n_targets, args.randomseed + random.random(), args.verbose))
+                events.extend(gen_evts(_channel=channel_instance, _flux=flux, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
 
-    events = []
-    for result in as_completed(results):
-        events.extend(result.result())
+    #events = []
+    #for result in as_completed(results):
+        #events.extend(result.result())
 
     # Sort events by time and write them to an output file
     events.sort(key=lambda evt: evt.time)
@@ -129,7 +131,7 @@ def parse_command_line_options():
     parser.add_argument("--randomseed", metavar="SEED", default=random.randint(0, 2**32 - 1), type=int,  # non-ints may not give reproducible results
                         help="Integer between 0 and 2^32 - 1 used as a random number seed to reproducibly generate events. Default: Random.")
 
-    parser.add_argument("--maxworkers", metavar="N", type=int, help="Maximum number of parallel processes. Default: [number of CPU cores].")
+    #parser.add_argument("--maxworkers", metavar="N", type=int, help="Maximum number of parallel processes. Default: [number of CPU cores].")
 
     parser.add_argument("-v", "--verbose", action="count", help="Verbose output, e.g. for debugging. Off by default.")
 
