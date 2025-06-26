@@ -42,7 +42,7 @@ def main():
             channel_instance = mod_channel.Channel(flv)
             for flux in flux_at_detector.components[flv]:
                 #results.append(pool.submit(gen_evts, channel_instance, flux, n_targets, args.randomseed + random.random(), args.verbose))
-                events.extend(gen_evts(_channel=channel_instance, _flux=flux, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
+                events.extend(gen_evts(_channel=channel_instance, _flux=flux, mode=args.mode, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
 
     #events = []
     #for result in as_completed(results):
