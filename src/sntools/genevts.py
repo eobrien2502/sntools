@@ -42,7 +42,7 @@ def main():
             channel_instance = mod_channel.Channel(flv)
             for flux in flux_at_detector.components[flv]:
                 #results.append(pool.submit(gen_evts, channel_instance, flux, n_targets, args.randomseed + random.random(), args.verbose))
-                events.extend(gen_evts(_channel=channel_instance, _flux=flux, mode=args.mode, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
+                events.extend(gen_evts(_channel=channel_instance, _flux=flux, mode=args.mode, binsize=args.binsize, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
 
     #events = []
     #for result in as_completed(results):
@@ -123,10 +123,13 @@ def parse_command_line_options():
     parser.add_argument("--distance", type=float, default=10.0, help="Distance to supernova in kpc. Default: %(default)s.")
 
     parser.add_argument("--starttime", metavar="T", type=float,
-                        help="Start generating events at T milliseconds. Default: First time bin in input file.")
+                        help="Start generating events at T milliseconds (ccsn) or T minutes (presn). Default: First time bin in input file.")
 
     parser.add_argument("--endtime", metavar="T", type=float,
-                        help="Stop generating events at T milliseconds. Default: Last time bin in input file.")
+                        help="Stop generating events at T milliseconds (ccsn) or T minutes (presn). Default: Last time bin in input file.")
+    
+    parser.add_argument("--binsize", metavar="BIN", type=float, default=0.5,
+                        help="Size of bins used in presn rate calculations, given in minutes. Default: 0.5 minutes (30 seconds).")
 
     parser.add_argument("--randomseed", metavar="SEED", default=random.randint(0, 2**32 - 1), type=int,  # non-ints may not give reproducible results
                         help="Integer between 0 and 2^32 - 1 used as a random number seed to reproducibly generate events. Default: Random.")
@@ -141,6 +144,11 @@ def parse_command_line_options():
 
     args.detector = Detector(args.detector)
     args.channels = args.detector.material["channel_weights"] if args.channel == "all" else [args.channel]
+
+    # converting minutes into milliseconds for the presn mode
+    if args.mode == "presn":
+        args.starttime = args.starttime * 60* 1000
+        args.endtime = args.endtime * 60 * 1000
 
     if args.format[:7] == "SNEWPY-":
         args.flux = SNEWPYCompositeFlux.from_file(args.input_file, args.mode, args.format[7:], args.starttime, args.endtime)

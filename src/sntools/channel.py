@@ -6,7 +6,7 @@ import random
 from scipy import integrate, interpolate
 
 
-def gen_evts(_channel, _flux, mode, n_targets, seed, verbose):
+def gen_evts(_channel, _flux, mode, binsize, n_targets, seed, verbose):
     """Generate events.
 
     * Get event rate by interpolating from time steps in the input data.
@@ -45,12 +45,15 @@ def gen_evts(_channel, _flux, mode, n_targets, seed, verbose):
     if mode == "sn":
         bin_width = 1  # in ms
     elif mode == "presn":
-        bin_width = 600000 # in ms
+        bin_width = binsize*60*1000 # converting minutes into ms
 
     
     n_bins = int((flux.endtime - flux.starttime) / bin_width)  # number of full-width bins; int() implies floor()
     if verbose:
-        print(f"[{tag}] Generating events in {bin_width} ms bins from {flux.starttime} to {flux.endtime} ms ...")
+        if mode == "presn":
+            print(f"[{tag}] Generating events in {binsize} minute bins from {(flux.starttime)/60000} to {(flux.endtime)/60000} minutes ...")
+        else:
+            print(f"[{tag}] Generating events in {bin_width} ms bins from {flux.starttime} to {flux.endtime} ms ...")
 
     # scipy is optimized for operating on large arrays, making it orders of
     # magnitude faster to pre-compute all values of the interpolated functions.
@@ -66,6 +69,8 @@ def gen_evts(_channel, _flux, mode, n_targets, seed, verbose):
     
 
     binned_nevt = np.random.poisson(binned_nevt_th)  # Get random number of events in each bin from Poisson distribution
+
+
     flux.prepare_evt_gen(binned_t)  # give flux script a chance to pre-compute values
 
     events = []

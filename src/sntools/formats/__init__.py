@@ -188,7 +188,7 @@ def get_starttime(starttime, minimum):
     if starttime is None:
         starttime = ceil(minimum)
     elif starttime < minimum:
-        raise ValueError(f"Start time cannot be earlier than {minimum} (first entry in input file).")
+        raise ValueError(f"Start time cannot be earlier than {minimum} ms (first entry in input file).")
     return starttime
 
 
@@ -202,7 +202,7 @@ def get_endtime(endtime, maximum):
     if endtime is None:
         endtime = floor(maximum)
     elif endtime > maximum:
-        raise ValueError(f"End time cannot be later than {maximum} (last entry in input file).")
+        raise ValueError(f"End time cannot be later than {maximum} ms (last entry in input file).")
     return endtime
 
 
