@@ -14,7 +14,7 @@ description = "Event generator for supernova burst neutrinos"
 readme = "README.md"
 license = {file = "LICENSE"}
 
-requires-python = ">=3.8"  # TODO: Also update classifiers below!
+requires-python = ">=3.9"  # TODO: Also update classifiers below!
 dependencies = [
     "numpy",
     "scipy",
@@ -35,11 +35,11 @@ classifiers = [
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3 :: Only',
-    'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
 ]
 
 
