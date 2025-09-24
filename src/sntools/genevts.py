@@ -32,19 +32,42 @@ def main():
     flux_at_detector = args.flux.transformed_by(args.transformation, args.distance)
 
     # Generate events for each (sub-)channel and combine them
-    pool = ProcessPoolExecutor(max_workers=args.maxworkers)
-    results = []
-    for channel in sorted(args.channels):
-        mod_channel = import_module("sntools.interaction_channels." + channel)
-        n_targets = args.detector.n_molecules * args.detector.material["channel_weights"][channel]
-        for flv in mod_channel.possible_flavors:
-            channel_instance = mod_channel.Channel(flv)
-            for flux in flux_at_detector.components[flv]:
-                results.append(pool.submit(gen_evts, channel_instance, flux, n_targets, args.randomseed + random.random(), args.verbose))
 
-    events = []
-    for result in as_completed(results):
-        events.extend(result.result())
+    
+    # using the process pool executor for ccsn mode 
+    if args.mode == "ccsn":
+        pool = ProcessPoolExecutor(max_workers=args.maxworkers)
+        results = []
+
+        for channel in sorted(args.channels):
+            mod_channel = import_module("sntools.interaction_channels." + channel)
+            n_targets = args.detector.n_molecules * args.detector.material["channel_weights"][channel]
+            for flv in mod_channel.possible_flavors:
+                channel_instance = mod_channel.Channel(flv)
+                for flux in flux_at_detector.components[flv]:
+                    results.append(pool.submit(gen_evts, channel_instance, flux, args.mode, args.binsize, n_targets, args.randomseed + random.random(), args.verbose))
+        
+        events = []
+        for result in as_completed(results):
+            events.extend(result.result())
+    
+
+    # but the process pool executor isn't compatible with presn code from snewpy so we can't use it in this case.
+    elif args.mode == "presn":
+        events = []
+
+        for channel in sorted(args.channels):
+            mod_channel = import_module("sntools.interaction_channels." + channel)
+            n_targets = args.detector.n_molecules * args.detector.material["channel_weights"][channel]
+            for flv in mod_channel.possible_flavors:
+                channel_instance = mod_channel.Channel(flv)
+                for flux in flux_at_detector.components[flv]:
+                    events.extend(gen_evts(_channel=channel_instance, _flux=flux, mode=args.mode, binsize=args.binsize, n_targets=n_targets, seed=args.randomseed + random.random(), verbose=args.verbose))
+
+    
+    
+    #===================================================================================================================================================
+    
 
     # Sort events by time and write them to an output file
     events.sort(key=lambda evt: evt.time)
@@ -77,10 +100,17 @@ def parse_command_line_options():
 
     parser.add_argument("input_file", help="Name or common prefix of the input file(s). Required.")
 
+    choices = ("ccsn", "presn")
+
+    parser.add_argument("--mode", metavar="MODE", choices=choices, default=choices[0], 
+                        help="Mode of operation: supernova burst or pre supernova. Choices: %(choices)s. Default: %(default)s.")
+
     choices = ("gamma", "nakazato", "princeton", "totani", "warren2020",
                "SNEWPY-Bollig_2016", "SNEWPY-Fornax_2021", "SNEWPY-Fornax_2022", "SNEWPY-Kuroda_2020",
                "SNEWPY-Mori_2023", "SNEWPY-Nakazato_2013", "SNEWPY-OConnor_2015", "SNEWPY-Sukhbold_2015",
-               "SNEWPY-Tamborra_2014", "SNEWPY-Walk_2018", "SNEWPY-Walk_2019", "SNEWPY-Zha_2021")
+               "SNEWPY-Tamborra_2014", "SNEWPY-Walk_2018", "SNEWPY-Walk_2019", "SNEWPY-Zha_2021", "SNEWPY-Odrzywolek_2010",
+               "SNEWPY-Patton_2017", "SNEWPY-Kato_2017", "SNEWPY-Yoshida_2016")
+    
     parser.add_argument("-f", "--format", metavar="FORMAT", choices=choices, default=choices[1],
                         help="Format of input file(s). Choices: %(choices)s. Default: %(default)s.")
 
@@ -113,10 +143,13 @@ def parse_command_line_options():
     parser.add_argument("--distance", type=float, default=10.0, help="Distance to supernova in kpc. Default: %(default)s.")
 
     parser.add_argument("--starttime", metavar="T", type=float,
-                        help="Start generating events at T milliseconds. Default: First time bin in input file.")
+                        help="Start generating events at T milliseconds (ccsn) or T minutes (presn). Default: First time bin in input file.")
 
     parser.add_argument("--endtime", metavar="T", type=float,
-                        help="Stop generating events at T milliseconds. Default: Last time bin in input file.")
+                        help="Stop generating events at T milliseconds (ccsn) or T minutes (presn). Default: Last time bin in input file.")
+    
+    parser.add_argument("--binsize", metavar="BIN", type=float, default=1,
+                        help="Size of bins used in presn rate calculations, given in seconds. Default: 1 second.")
 
     parser.add_argument("--randomseed", metavar="SEED", default=random.randint(0, 2**32 - 1), type=int,  # non-ints may not give reproducible results
                         help="Integer between 0 and 2^32 - 1 used as a random number seed to reproducibly generate events. Default: Random.")
@@ -132,8 +165,13 @@ def parse_command_line_options():
     args.detector = Detector(args.detector)
     args.channels = args.detector.material["channel_weights"] if args.channel == "all" else [args.channel]
 
+    # converting minutes into milliseconds for the presn mode
+    if args.mode == "presn":
+        args.starttime = args.starttime * 60* 1000
+        args.endtime = args.endtime * 60 * 1000
+
     if args.format[:7] == "SNEWPY-":
-        args.flux = SNEWPYCompositeFlux.from_file(args.input_file, args.format[7:], args.starttime, args.endtime)
+        args.flux = SNEWPYCompositeFlux.from_file(args.input_file, args.mode, args.format[7:], args.starttime, args.endtime)
     else:
         args.flux = CompositeFlux.from_file(args.input_file, args.format, args.starttime, args.endtime)
 
