@@ -165,7 +165,7 @@ class SNEWPYCompositeFlux(CompositeFlux):
         # so we’ll turn it into an absolute path first.
 
         # need an if statement here to import the snewpy.models.presn_loaders module if the mode is set to presn.
-        if mode == "sn":
+        if mode == "ccsn":
             sn_model = getattr(import_module('snewpy.models.ccsn_loaders'), format)(abspath(file))
         elif mode == "presn":
             sn_model = getattr(import_module('snewpy.models.presn_loaders'), format)(abspath(file))

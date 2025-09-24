@@ -42,16 +42,16 @@ def gen_evts(_channel, _flux, mode, binsize, n_targets, seed, verbose):
     event_rate = interpolate.pchip(flux.raw_times, raw_nevts)
 
     # appropriate bin width is different for each mode
-    if mode == "sn":
+    if mode == "ccsn":
         bin_width = 1  # in ms
     elif mode == "presn":
-        bin_width = binsize*60*1000 # converting minutes into ms
+        bin_width = binsize*1000 # converting seconds into ms
 
     
     n_bins = int((flux.endtime - flux.starttime) / bin_width)  # number of full-width bins; int() implies floor()
     if verbose:
         if mode == "presn":
-            print(f"[{tag}] Generating events in {binsize} minute bins from {(flux.starttime)/60000} to {(flux.endtime)/60000} minutes ...")
+            print(f"[{tag}] Generating events in {binsize} second bins from {(flux.starttime)/1000} to {(flux.endtime)/1000} seconds ...")
         else:
             print(f"[{tag}] Generating events in {bin_width} ms bins from {flux.starttime} to {flux.endtime} ms ...")
 
@@ -69,7 +69,6 @@ def gen_evts(_channel, _flux, mode, binsize, n_targets, seed, verbose):
     
 
     binned_nevt = np.random.poisson(binned_nevt_th)  # Get random number of events in each bin from Poisson distribution
-
 
     flux.prepare_evt_gen(binned_t)  # give flux script a chance to pre-compute values
 

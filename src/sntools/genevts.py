@@ -34,9 +34,8 @@ def main():
     # Generate events for each (sub-)channel and combine them
 
     
-    # using the process pool executor for sn mode 
-    if args.mode == "sn":
-        print("we are going through the ProcessPoolExecutor route")
+    # using the process pool executor for ccsn mode 
+    if args.mode == "ccsn":
         pool = ProcessPoolExecutor(max_workers=args.maxworkers)
         results = []
 
@@ -55,7 +54,6 @@ def main():
 
     # but the process pool executor isn't compatible with presn code from snewpy so we can't use it in this case.
     elif args.mode == "presn":
-        print("We are not in the ProcessPoolExecutor loop")
         events = []
 
         for channel in sorted(args.channels):
@@ -102,8 +100,7 @@ def parse_command_line_options():
 
     parser.add_argument("input_file", help="Name or common prefix of the input file(s). Required.")
 
-    # comment in place of a possible new argument to specify pre SN fluxes needed
-    choices = ("sn", "presn")
+    choices = ("ccsn", "presn")
 
     parser.add_argument("--mode", metavar="MODE", choices=choices, default=choices[0], 
                         help="Mode of operation: supernova burst or pre supernova. Choices: %(choices)s. Default: %(default)s.")
@@ -151,8 +148,8 @@ def parse_command_line_options():
     parser.add_argument("--endtime", metavar="T", type=float,
                         help="Stop generating events at T milliseconds (ccsn) or T minutes (presn). Default: Last time bin in input file.")
     
-    parser.add_argument("--binsize", metavar="BIN", type=float, default=0.5,
-                        help="Size of bins used in presn rate calculations, given in minutes. Default: 0.5 minutes (30 seconds).")
+    parser.add_argument("--binsize", metavar="BIN", type=float, default=1,
+                        help="Size of bins used in presn rate calculations, given in seconds. Default: 1 second.")
 
     parser.add_argument("--randomseed", metavar="SEED", default=random.randint(0, 2**32 - 1), type=int,  # non-ints may not give reproducible results
                         help="Integer between 0 and 2^32 - 1 used as a random number seed to reproducibly generate events. Default: Random.")
