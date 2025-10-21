@@ -36,6 +36,12 @@ jobs:
         python -c 'import sntools; sntools.setup()'
         # Compare with sample output
         diff outfile.kin tests/sample_outfile.kin
+    - name: Run pre supernova integration test
+      run: |
+        # Run presnsetup function
+        python -c 'import sntools; sntools.presnsetup()'
+        # compare with sample output
+        diff presnoutfile.kin tests/sample_presnoutfile.kin
 
   lint:
     runs-on: 'ubuntu-latest'
