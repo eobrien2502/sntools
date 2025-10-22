@@ -105,7 +105,7 @@ def presnsetup():
     
     tryprint(u"\U0001f6e0")
     print("Testing event generation ...")
-    sys.argv += [flux_file, '--format', 'SNEWPY-Patton_2017', '--detector', 'HyperK', '--distance', '0.15', '--transformation', 'AdiabaticMSW_NMO', '--starttime', '-120', '--endtime', '0', '--binsize', '1', '-o', 'presnoutfile.kin', '--randomseed', '314']
+    sys.argv += [flux_file, '--format', 'SNEWPY-Patton_2017', '--detector', 'HyperK', '--distance', '0.15', '--transformation', 'AdiabaticMSW_IMO', '--starttime', '-120', '--endtime', '0', '--binsize', '1', '-o', 'presnoutfile.kin', '--randomseed', '205']
     genevts.main()
 
     tryprint(u"\U0001f6e0")
@@ -113,7 +113,7 @@ def presnsetup():
     with open('presnoutfile.kin', 'r') as f:
         output_sha = hashlib.sha256(f.read().encode('utf-8')).hexdigest()
 
-    test_sha = "f17297d1171343a5a18d70670a58d051df2216cb37117e9067dd3382a42345be"
+    test_sha = "824dffa7ed01016a9044a28b36ca33aacdd81a9db662ca69a08d9ab0eb32bf29"
     if output_sha == test_sha:
         tryprint(u"\u2705", "[SUCCESS]")
         print("Everything seems to work fine. Enjoy using sntools!")
