@@ -42,6 +42,13 @@ jobs:
         python -c 'import sntools; sntools.presnsetup()'
         # compare with sample output
         diff presnoutfile.kin tests/sample_presnoutfile.kin
+    - name: Run pre supernova binsize test
+      run: |
+        # Run presn binszie test
+        python -c 'import sntools; sntools.presnbinsizetest()'
+        # compare with sample output
+        diff presnbinsizeoutfile.kin tests/sample_presnbinsizeoutfile.kin
+
 
   lint:
     runs-on: 'ubuntu-latest'
