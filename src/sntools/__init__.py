@@ -83,25 +83,22 @@ def presnsetup():
 
     flux_dir = 'fluxes/'
     flux_file = flux_dir + 'totalLuminosity_15SolarMass.dat'
-    flux_url = 'https://raw.githubusercontent.com/SNEWS2/sntools/main/fluxes/totalLuminosity_15SolarMass.dat'
-    if os.path.exists(flux_file):
-        tryprint(u"\u2705", "[SUCCESS]")
-        print("Using sample flux file at " + flux_file)
-    else:
-        tryprint(u"\U0001f6e0")
-        print("Downloading sample flux file from " + flux_url)
-        if not os.path.isdir(flux_dir):
-            os.mkdir(flux_dir)
+    flux_url = 'https://raw.githubusercontent.com/SNEWS2/snewpy-models-presn/master/models/Patton_2017/totalLuminosity_15SolarMass.dat'
+    
+    tryprint(u"\U0001f6e0")
+    print("Downloading sample flux file from " + flux_url)
+    if not os.path.isdir(flux_dir):
+        os.mkdir(flux_dir)
 
-        from urllib.request import urlretrieve
-        try:
-            urlretrieve(flux_url, filename=flux_file)
-            tryprint(u"\u2705", "[SUCCESS]")
-            print("Saved sample flux file to " + flux_file)
-        except IOError:
-            tryprint(u"\u274c", "[ERROR]")
-            print("Cannot download sample flux file.")
-            sys.exit(-1)
+    from urllib.request import urlretrieve
+    try:
+        urlretrieve(flux_url, filename=flux_file)
+        tryprint(u"\u2705", "[SUCCESS]")
+        print("Saved sample flux file to " + flux_file)
+    except IOError:
+        tryprint(u"\u274c", "[ERROR]")
+        print("Cannot download sample flux file.")
+        sys.exit(-1)
     
     tryprint(u"\U0001f6e0")
     print("Testing event generation ...")
@@ -138,25 +135,22 @@ def presnbinsizetest():
 
     flux_dir = 'fluxes/'
     flux_file = flux_dir + 'totalLuminosity_15SolarMass.dat'
-    flux_url = 'https://raw.githubusercontent.com/SNEWS2/sntools/main/fluxes/totalLuminosity_15SolarMass.dat'
-    if os.path.exists(flux_file):
-        tryprint(u"\u2705", "[SUCCESS]")
-        print("Using sample flux file at " + flux_file)
-    else:
-        tryprint(u"\U0001f6e0")
-        print("Downloading sample flux file from " + flux_url)
-        if not os.path.isdir(flux_dir):
-            os.mkdir(flux_dir)
+    flux_url = 'https://raw.githubusercontent.com/SNEWS2/snewpy-models-presn/master/models/Patton_2017/totalLuminosity_15SolarMass.dat'
+   
+    tryprint(u"\U0001f6e0")
+    print("Downloading sample flux file from " + flux_url)
+    if not os.path.isdir(flux_dir):
+        os.mkdir(flux_dir)
 
-        from urllib.request import urlretrieve
-        try:
-            urlretrieve(flux_url, filename=flux_file)
-            tryprint(u"\u2705", "[SUCCESS]")
-            print("Saved sample flux file to " + flux_file)
-        except IOError:
-            tryprint(u"\u274c", "[ERROR]")
-            print("Cannot download sample flux file.")
-            sys.exit(-1)
+    from urllib.request import urlretrieve
+    try:
+        urlretrieve(flux_url, filename=flux_file)
+        tryprint(u"\u2705", "[SUCCESS]")
+        print("Saved sample flux file to " + flux_file)
+    except IOError:
+        tryprint(u"\u274c", "[ERROR]")
+        print("Cannot download sample flux file.")
+        sys.exit(-1)
     
     tryprint(u"\U0001f6e0")
     print("Testing event generation ...")
