@@ -10,7 +10,7 @@ authors = [
     {name="Jost Migenda"},
     {name="sntools Contributors"},
 ]
-description = "Event generator for supernova burst and pre supernova neutrinos"
+description = "Event generator for supernova burst and pre-supernova neutrinos"
 readme = "README.md"
 license = {file = "LICENSE"}
 
