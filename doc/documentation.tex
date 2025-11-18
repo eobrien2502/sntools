@@ -404,7 +404,7 @@ The spectral number luminosity at time $t_n$ and energy $E_k$ is given by
 Finally, a linear interpolation in time and log cubic spline interpolation in energy are used to determine the spectral number luminosity at an arbitrary time and energy.%
 \footnote{This approach closely follows the one used in code provided by Totani. There is excellent agreement of the calculated fluxes between Totani’s code and sntools, with differences of at most a few per mille due to slight differences in the numerical interpolation algorithms used.}
 
-\subsection{pre-supernova Time Binning}\label{sec:pre-supernova-time-binning}
+\subsection{Pre-Supernova Time Binning}\label{sec:pre-supernova-time-binning}
 As mentioned in section~\ref{sec:more-details}, when using pre-supernova models, the size of the time bins used for calculations within SNTools can be specified through the optional argument \texttt{--binsize <value>}.
 During the development of support for pre-supernova models, a study was performed to optimse the time bin size for Hyper-Kamiokande. The study concluded that a bin size of \SI{1}{s} was the best choice,  
 limiting any artificial step features in the distribution of events arising from the nature of the time binning. As a result, \SI{1}{s} is chosen as the default value of this argument.
